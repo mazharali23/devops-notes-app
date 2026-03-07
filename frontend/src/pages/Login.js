@@ -1,7 +1,7 @@
-import { useState } from "react"
-import { login } from "../services/auth"
-import { Link, useNavigate } from "react-router-dom"
-import { toast } from "react-toastify"
+import {useState} from "react"
+import {useNavigate, Link} from "react-router-dom"
+import {toast} from "react-toastify"
+import {login} from "../services/authService"
 
 function Login(){
 
@@ -12,7 +12,7 @@ email:"",
 password:""
 })
 
-const handleChange=(e)=>{
+const handleChange = (e)=>{
 setForm({...form,[e.target.name]:e.target.value})
 }
 
@@ -20,9 +20,14 @@ const handleSubmit = async(e)=>{
 
 e.preventDefault()
 
+if(!form.email || !form.password){
+toast.error("Email and password required")
+return
+}
+
 try{
 
- await login(form)
+await login(form)
 
 toast.success("Login successful")
 
@@ -40,16 +45,23 @@ err?.response?.data?.message || "Invalid credentials"
 
 return(
 
-<div className="auth-wrapper">
+<div className="flex items-center justify-center min-h-screen bg-gray-100">
 
-<form className="auth-box" onSubmit={handleSubmit}>
+<form
+onSubmit={handleSubmit}
+className="bg-white p-8 rounded shadow-md w-96"
+>
 
-<h2>Login</h2>
+<h2 className="text-2xl font-bold mb-6 text-center">
+Login
+</h2>
 
 <input
+type="email"
 name="email"
 placeholder="Email"
 onChange={handleChange}
+className="w-full p-2 mb-3 border rounded"
 />
 
 <input
@@ -57,13 +69,44 @@ type="password"
 name="password"
 placeholder="Password"
 onChange={handleChange}
+className="w-full p-2 mb-4 border rounded"
 />
 
-<button>Login</button>
+<button
+type="submit"
+className="w-full bg-blue-600 text-white p-2 rounded"
+>
+Login
+</button>
 
-<p>
-No account?
-<Link to="/signup"> Signup</Link>
+<p className="text-center mt-4">
+
+Forgot Password?{" "}
+
+<Link
+to="/forgot-password"
+className="text-blue-600"
+>
+
+Reset
+
+</Link>
+
+</p>
+
+<p className="text-center mt-2">
+
+No account?{" "}
+
+<Link
+to="/signup"
+className="text-blue-600"
+>
+
+Signup
+
+</Link>
+
 </p>
 
 </form>

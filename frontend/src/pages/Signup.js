@@ -1,7 +1,7 @@
-import { useState } from "react"
-import { signup } from "../services/auth"
-import { Link, useNavigate } from "react-router-dom"
-import { toast } from "react-toastify"
+import {useState} from "react"
+import {useNavigate, Link} from "react-router-dom"
+import {toast} from "react-toastify"
+import {signup} from "../services/authService"
 
 function Signup(){
 
@@ -10,10 +10,11 @@ const navigate = useNavigate()
 const [form,setForm] = useState({
 name:"",
 email:"",
-password:""
+password:"",
+confirmPassword:""
 })
 
-const handleChange=(e)=>{
+const handleChange = (e)=>{
 setForm({...form,[e.target.name]:e.target.value})
 }
 
@@ -21,9 +22,38 @@ const handleSubmit = async(e)=>{
 
 e.preventDefault()
 
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{8,}$/
+
+if(!form.name){
+toast.error("Name is required")
+return
+}
+
+if(!emailRegex.test(form.email)){
+toast.error("Enter a valid email")
+return
+}
+
+if(!passwordRegex.test(form.password)){
+toast.error(
+"Password must be at least 8 characters with letters and numbers"
+)
+return
+}
+
+if(form.password !== form.confirmPassword){
+toast.error("Passwords do not match")
+return
+}
+
 try{
 
- await signup(form)
+await signup({
+name:form.name,
+email:form.email,
+password:form.password
+})
 
 toast.success("Account created successfully")
 
@@ -41,22 +71,31 @@ err?.response?.data?.message || "Signup failed"
 
 return(
 
-<div className="auth-wrapper">
+<div className="flex items-center justify-center min-h-screen bg-gray-100">
 
-<form className="auth-box" onSubmit={handleSubmit}>
+<form
+onSubmit={handleSubmit}
+className="bg-white p-8 rounded shadow-md w-96"
+>
 
-<h2>Create Account</h2>
+<h2 className="text-2xl font-bold mb-6 text-center">
+Create Account
+</h2>
 
 <input
+type="text"
 name="name"
 placeholder="Name"
 onChange={handleChange}
+className="w-full p-2 mb-3 border rounded"
 />
 
 <input
+type="email"
 name="email"
 placeholder="Email"
 onChange={handleChange}
+className="w-full p-2 mb-3 border rounded"
 />
 
 <input
@@ -64,13 +103,37 @@ type="password"
 name="password"
 placeholder="Password"
 onChange={handleChange}
+className="w-full p-2 mb-3 border rounded"
 />
 
-<button>Signup</button>
+<input
+type="password"
+name="confirmPassword"
+placeholder="Confirm Password"
+onChange={handleChange}
+className="w-full p-2 mb-4 border rounded"
+/>
 
-<p>
-Already have account?
-<Link to="/login"> Login</Link>
+<button
+type="submit"
+className="w-full bg-blue-600 text-white p-2 rounded"
+>
+Signup
+</button>
+
+<p className="text-center mt-4">
+
+Already have an account?{" "}
+
+<Link
+to="/login"
+className="text-blue-600"
+>
+
+Login
+
+</Link>
+
 </p>
 
 </form>
