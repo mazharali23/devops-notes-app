@@ -13,7 +13,9 @@ try{
 
 const { email } = req.body
 
-const user = await User.findOne({ email })
+const user = await User.findOne({
+email: email.toLowerCase()
+})
 
 if(!user){
 return res.status(404).json({ message: "Email not registered" })
@@ -78,29 +80,73 @@ res.status(500).json({message:"Server error"})
 })
 
 // Signup
-router.post("/signup", async (req, res) => {
+//router.post("/signup", async (req, res) => {
 
-  const { name, email, password } = req.body
+  //const { name, email, password } = req.body
 
-  try {
+  //try {
 
-    const hashedPassword = await bcrypt.hash(password, 10)
+    //const hashedPassword = await bcrypt.hash(password, 10)
 
-    const user = new User({
-      name,
-      email,
-      password: hashedPassword
-    })
+    //const user = new User({
+      //name,
+      //email,
+      //password: hashedPassword
+    //})
 
-    await user.save()
+    //await user.save()
 
-    res.json({ message: "User created" })
+    //res.json({ message: "User created" })
 
-  } catch (err) {
+//  } catch (err) {
 
-    res.status(500).json(err)
+  //  res.status(500).json(err)
 
-  }
+  //}
+
+//})
+
+// Sign up
+
+router.post("/signup", async (req,res)=>{
+
+try{
+
+const {name,email,password} = req.body
+
+const existingUser = await User.findOne({
+email: email.toLowerCase()
+})
+
+if(existingUser){
+return res.status(400).json({
+message:"Email already registered"
+})
+}
+
+const user = new User({
+
+name,
+email: email.toLowerCase(),
+password
+
+})
+
+await user.save()
+
+res.json({
+message:"Signup successful"
+})
+
+}catch(err){
+
+console.log(err)
+
+res.status(500).json({
+message:"Server error"
+})
+
+}
 
 })
 
@@ -112,7 +158,7 @@ router.post("/login", async (req, res) => {
 
   try {
 
-    const user = await User.findOne({ email })
+    const user = await User.findOne({ email: email.toLowerCase() })
 
     if (!user)
       return res.status(400).json({ message: "User not found" })
