@@ -7,41 +7,47 @@ const User = require("../models/User")
 const router = express.Router()
 
 // forgot password
-router.post("/forgot-password", async (req, res) => {
+const sendEmail = require("../utils/sendEmail")
 
-try{
 
-const { email } = req.body
+router.post("/forgot-password", async (req,res)=>{
+
+const {email} = req.body
 
 const user = await User.findOne({
 email: email.toLowerCase()
 })
 
 if(!user){
-return res.status(404).json({ message: "Email not registered" })
+return res.status(404).json({
+message:"Email not registered"
+})
 }
 
-const resetToken = crypto.randomBytes(32).toString("hex")
+const token = crypto.randomBytes(32).toString("hex")
 
-user.resetToken = resetToken
+user.resetToken = token
 user.resetTokenExpire = Date.now() + 3600000
 
 await user.save()
 
+const resetLink =
+`${process.env.FRONTEND_URL}/reset-password/${token}`
+
+await sendEmail(
+user.email,
+"Password Reset",
+`Click this link to reset your password:
+${resetLink}`
+)
+
 res.json({
-message:"Reset token generated",
-token: resetToken
+message:"Reset email sent"
 })
-
-}catch(err){
-
-res.status(500).json({message:"Server error"})
-
-}
 
 })
 
-// reset-password
+//reset-password
 router.post("/reset-password/:token", async (req,res)=>{
 
 try{
@@ -136,6 +142,10 @@ await user.save()
 
 res.json({
 message:"Signup successful"
+
+console.log("Saving user:", email)
+await user.save()
+console.log("User saved")
 })
 
 }catch(err){
