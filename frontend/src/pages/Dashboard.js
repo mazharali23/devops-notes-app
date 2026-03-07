@@ -112,7 +112,7 @@ return
 
 fetchNotes()
 
-},[])
+},[navigate])
 
 return(
 

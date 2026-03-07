@@ -2,6 +2,7 @@ import { useState } from "react"
 import { signup } from "../services/auth"
 import { Link, useNavigate } from "react-router-dom"
 import toast from "react-hot-toast"
+import { toast } from "react-toastify"
 
 function Signup(){
 
@@ -23,7 +24,7 @@ e.preventDefault()
 
 try{
 
-const res = await signup(form)
+const await signup(form)
 
 toast.success("Account created successfully")
 
