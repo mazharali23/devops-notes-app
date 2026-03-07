@@ -1,7 +1,6 @@
 import { useState } from "react"
 import { login } from "../services/auth"
 import { Link, useNavigate } from "react-router-dom"
-import toast from "react-hot-toast"
 import { toast } from "react-toastify"
 
 function Login(){
