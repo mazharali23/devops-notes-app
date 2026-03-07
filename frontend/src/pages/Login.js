@@ -22,7 +22,7 @@ e.preventDefault()
 
 try{
 
-const await login(form)
+ await login(form)
 
 toast.success("Login successful")
 

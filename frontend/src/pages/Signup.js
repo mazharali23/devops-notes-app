@@ -23,7 +23,7 @@ e.preventDefault()
 
 try{
 
-const await signup(form)
+ await signup(form)
 
 toast.success("Account created successfully")
 
