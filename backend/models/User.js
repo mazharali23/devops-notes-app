@@ -8,7 +8,14 @@ const UserSchema = new mongoose.Schema({
 		unique: true
 	},
 
-	password: String
+	password: String,
+	resetToken:{
+	type:String
+	},
+
+	resetTokenExpire:{
+	type:Date
+	}
 
 }, { timestamp: true })
 
