@@ -1,3 +1,5 @@
+![CI](https://github.com/mazharali23/devops-notes-app/actions/workflows/ci.yml/badge.svg)
+
 # DevOps Notes App
 
 A **production-style DevOps project** demonstrating a full CI/CD pipeline, containerized microservices, Kubernetes orchestration, and monitoring stack.
