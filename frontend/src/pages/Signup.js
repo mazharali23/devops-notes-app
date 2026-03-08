@@ -23,28 +23,30 @@ const handleSubmit = async(e)=>{
 e.preventDefault()
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{8,}$/
 
 if(!form.name){
-toast.error("Name is required")
-return
+  toast.error("Name is required")
+  return
 }
 
 if(!emailRegex.test(form.email)){
-toast.error("Enter a valid email")
-return
+  toast.error("Enter a valid email")
+  return
 }
 
-if(!passwordRegex.test(form.password)){
-toast.error(
-"Password must be at least 8 characters with letters and numbers"
-)
-return
+if(form.password.length < 8){
+  toast.error("Password must be at least 8 characters")
+  return
+}
+
+if(!/[A-Za-z]/.test(form.password) || !/[0-9]/.test(form.password)){
+  toast.error("Password must contain at least one letter and one number")
+  return
 }
 
 if(form.password !== form.confirmPassword){
-toast.error("Passwords do not match")
-return
+  toast.error("Passwords do not match")
+  return
 }
 
 try{
