@@ -1,14 +1,14 @@
 import axios from "axios"
 
-const API = `process.env.REACT_APP_API_URL`
+const API = process.env.REACT_APP_API_URL
 
 export const signup = async (user) => {
-  const res = await axios.post(`${API}/signup`, user)
+  const res = await axios.post(`${API}/auth/signup`, user)
   return res.data
 }
 
 export const login = async (user) => {
-  const res = await axios.post(`${API}/login`, user)
+  const res = await axios.post(`${API}/auth/login`, user)
 
   localStorage.setItem("token", res.data.token)
 
