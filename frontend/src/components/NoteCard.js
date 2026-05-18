@@ -1,69 +1,56 @@
-import { FaTrash, FaEdit, FaThumbtack } from "react-icons/fa"
+export default function NoteCard({
+  note,
+  onDelete,
+  onEdit,
+}) {
 
-function NoteCard({note,deleteNote,editNote,togglePin}){
+  return (
 
-return(
+    <div className="note-card">
 
-<div className={`p-5 rounded-xl shadow hover:shadow-lg transition
-bg-white dark:bg-gray-800
-${note.pinned ? "border-l-4 border-yellow-400" : ""}`}>
+      <div className="note-card-top">
 
-<div className="flex justify-between items-start">
+        <div className="note-badge">
+          NOTE
+        </div>
 
-<h2 className="text-xl font-semibold">
-{note.title}
-</h2>
+      </div>
 
-<button
-onClick={()=>togglePin(note)}
-className="text-gray-500 hover:text-yellow-500"
->
-<FaThumbtack/>
-</button>
+      <h3 className="note-title">
+        {note.title}
+      </h3>
 
-</div>
+      <p className="note-content">
+        {note.content}
+      </p>
 
-<p className="text-gray-600 dark:text-gray-300 mt-3 mb-4">
-{note.content}
-</p>
+      <div className="note-footer">
 
-<div className="flex flex-wrap gap-2 mb-4">
+        <div className="note-date">
+          {new Date(note.createdAt).toLocaleDateString()}
+        </div>
 
-{(note.tags || []).map((tag,i)=>(
-<span
-key={i}
-className="bg-indigo-100 dark:bg-indigo-900
-text-indigo-600 dark:text-indigo-300
-text-sm px-2 py-1 rounded"
->
-{tag}
-</span>
-))}
+        <div className="card-actions">
 
-</div>
+          <button
+            className="btn btn-edit"
+            onClick={() => onEdit(note)}
+          >
+            Edit
+          </button>
 
-<div className="flex justify-end gap-4">
+          <button
+            className="btn btn-danger"
+            onClick={() => onDelete(note._id)}
+          >
+            Delete
+          </button>
 
-<button
-onClick={()=>editNote(note)}
-className="text-blue-500 hover:text-blue-700"
->
-<FaEdit/>
-</button>
+        </div>
 
-<button
-onClick={()=>deleteNote(note._id)}
-className="text-red-500 hover:text-red-700"
->
-<FaTrash/>
-</button>
+      </div>
 
-</div>
+    </div>
 
-</div>
-
-)
-
+  );
 }
-
-export default NoteCard
