@@ -1,29 +1,41 @@
-import { Link } from "react-router-dom"
-import { FaStickyNote } from "react-icons/fa"
+import { Link, useNavigate } from "react-router-dom";
 
-function Sidebar(){
+export default function Sidebar() {
 
-return(
+  const navigate = useNavigate();
 
-<div className="w-64 bg-gray-900 text-white min-h-screen p-6">
+  function logout(){
 
-<h2 className="text-2xl font-bold mb-10">
-DevOps Notes
-</h2>
+    localStorage.removeItem("token");
 
-<ul className="space-y-6">
+    navigate("/login");
 
-<li className="flex items-center gap-3">
-<FaStickyNote/>
-<Link to="/">Dashboard</Link>
-</li>
+  }
 
-</ul>
+  return (
 
-</div>
+    <div className="sidebar">
 
-)
+      <div className="logo">
+        DevOps Notes
+      </div>
 
+      <div className="nav-links">
+
+        <Link to="/">Dashboard</Link>
+        <Link to="/">My Notes</Link>
+        <Link to="/">Tags</Link>
+
+      </div>
+
+      <button
+        className="logout-btn"
+        onClick={logout}
+      >
+        Logout
+      </button>
+
+    </div>
+
+  );
 }
-
-export default Sidebar
