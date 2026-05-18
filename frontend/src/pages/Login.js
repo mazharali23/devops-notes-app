@@ -1,120 +1,83 @@
-import {useState} from "react"
-import {useNavigate, Link} from "react-router-dom"
-import {toast} from "react-toastify"
-import {login} from "../services/authService"
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
-function Login(){
+export default function Login(){
 
-const navigate = useNavigate()
+  const API = "http://192.168.192.129:5000/api";
 
-const [form,setForm] = useState({
-email:"",
-password:""
-})
+  const navigate = useNavigate();
 
-const handleChange = (e)=>{
-setForm({...form,[e.target.name]:e.target.value})
+  const [email,setEmail] = useState("");
+  const [password,setPassword] = useState("");
+
+  async function handleLogin(e){
+
+    e.preventDefault();
+
+    try{
+
+      const res = await axios.post(`${API}/auth/login`,{
+        email,
+        password,
+      });
+
+      localStorage.setItem("token",res.data.token);
+
+      navigate("/");
+
+    }catch(err){
+
+      alert("Invalid credentials");
+
+    }
+
+  }
+
+  return (
+
+    <div className="form-container">
+
+      <div className="auth-card">
+
+        <div className="auth-title">
+          Welcome Back
+        </div>
+
+        <form
+          className="auth-form"
+          onSubmit={handleLogin}
+        >
+
+          <input
+            className="auth-input"
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e)=>setEmail(e.target.value)}
+          />
+
+          <input
+            className="auth-input"
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e)=>setPassword(e.target.value)}
+          />
+
+          <button className="auth-button">
+            Login
+          </button>
+
+        </form>
+
+        <div className="auth-footer">
+          No account? <Link to="/signup">Signup</Link>
+        </div>
+
+      </div>
+
+    </div>
+
+  );
 }
-
-const handleSubmit = async(e)=>{
-
-e.preventDefault()
-
-if(!form.email || !form.password){
-toast.error("Email and password required")
-return
-}
-
-try{
-
-await login(form)
-
-toast.success("Login successful")
-
-navigate("/")
-
-}catch(err){
-
-toast.error(
-err?.response?.data?.message || "Invalid credentials"
-)
-
-}
-
-}
-
-return(
-
-<div className="flex items-center justify-center min-h-screen bg-gray-100">
-
-<form
-onSubmit={handleSubmit}
-className="bg-white p-8 rounded shadow-md w-96"
->
-
-<h2 className="text-2xl font-bold mb-6 text-center">
-Login
-</h2>
-
-<input
-type="email"
-name="email"
-placeholder="Email"
-onChange={handleChange}
-className="w-full p-2 mb-3 border rounded"
-/>
-
-<input
-type="password"
-name="password"
-placeholder="Password"
-onChange={handleChange}
-className="w-full p-2 mb-4 border rounded"
-/>
-
-<button
-type="submit"
-className="w-full bg-blue-600 text-white p-2 rounded"
->
-Login
-</button>
-
-<p className="text-center mt-4">
-
-Forgot Password?{" "}
-
-<Link
-to="/forgot-password"
-className="text-blue-600"
->
-
-Reset
-
-</Link>
-
-</p>
-
-<p className="text-center mt-2">
-
-No account?{" "}
-
-<Link
-to="/signup"
-className="text-blue-600"
->
-
-Signup
-
-</Link>
-
-</p>
-
-</form>
-
-</div>
-
-)
-
-}
-
-export default Login
