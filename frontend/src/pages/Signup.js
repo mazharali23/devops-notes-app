@@ -1,149 +1,91 @@
-import {useState} from "react"
-import {useNavigate, Link} from "react-router-dom"
-import {toast} from "react-toastify"
-import {signup} from "../services/authService"
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
-function Signup(){
+export default function Signup(){
 
-const navigate = useNavigate()
+  const API = "http://192.168.192.129:5000/api";
 
-const [form,setForm] = useState({
-name:"",
-email:"",
-password:"",
-confirmPassword:""
-})
+  const navigate = useNavigate();
 
-const handleChange = (e)=>{
-setForm({...form,[e.target.name]:e.target.value})
+  const [name,setName] = useState("");
+  const [email,setEmail] = useState("");
+  const [password,setPassword] = useState("");
+
+  async function handleSignup(e){
+
+    e.preventDefault();
+
+    try{
+
+      await axios.post(`${API}/auth/signup`,{
+        name,
+        email,
+        password,
+      });
+
+      navigate("/login");
+
+    }catch(err){
+
+      alert("Signup failed");
+
+    }
+
+  }
+
+  return (
+
+    <div className="form-container">
+
+      <div className="auth-card">
+
+        <div className="auth-title">
+          Create Account
+        </div>
+
+        <form
+          className="auth-form"
+          onSubmit={handleSignup}
+        >
+
+          <input
+            className="auth-input"
+            type="text"
+            placeholder="Name"
+            value={name}
+            onChange={(e)=>setName(e.target.value)}
+          />
+
+          <input
+            className="auth-input"
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e)=>setEmail(e.target.value)}
+          />
+
+          <input
+            className="auth-input"
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e)=>setPassword(e.target.value)}
+          />
+
+          <button className="auth-button">
+            Signup
+          </button>
+
+        </form>
+
+        <div className="auth-footer">
+          Already have account? <Link to="/login">Login</Link>
+        </div>
+
+      </div>
+
+    </div>
+
+  );
 }
-
-const handleSubmit = async(e)=>{
-
-e.preventDefault()
-
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-
-if(!form.name){
-  toast.error("Name is required")
-  return
-}
-
-if(!emailRegex.test(form.email)){
-  toast.error("Enter a valid email")
-  return
-}
-
-if(form.password.length < 8){
-  toast.error("Password must be at least 8 characters")
-  return
-}
-
-if(!/[A-Za-z]/.test(form.password) || !/[0-9]/.test(form.password)){
-  toast.error("Password must contain at least one letter and one number")
-  return
-}
-
-if(form.password !== form.confirmPassword){
-  toast.error("Passwords do not match")
-  return
-}
-
-try{
-
-await signup({
-name:form.name,
-email:form.email,
-password:form.password
-})
-
-toast.success("Account created successfully")
-
-navigate("/login")
-
-}catch(err){
-
-toast.error(
-err?.response?.data?.message || "Signup failed"
-)
-
-}
-
-}
-
-return(
-
-<div className="flex items-center justify-center min-h-screen bg-gray-100">
-
-<form
-onSubmit={handleSubmit}
-className="bg-white p-8 rounded shadow-md w-96"
->
-
-<h2 className="text-2xl font-bold mb-6 text-center">
-Create Account
-</h2>
-
-<input
-type="text"
-name="name"
-placeholder="Name"
-onChange={handleChange}
-className="w-full p-2 mb-3 border rounded"
-/>
-
-<input
-type="email"
-name="email"
-placeholder="Email"
-onChange={handleChange}
-className="w-full p-2 mb-3 border rounded"
-/>
-
-<input
-type="password"
-name="password"
-placeholder="Password"
-onChange={handleChange}
-className="w-full p-2 mb-3 border rounded"
-/>
-
-<input
-type="password"
-name="confirmPassword"
-placeholder="Confirm Password"
-onChange={handleChange}
-className="w-full p-2 mb-4 border rounded"
-/>
-
-<button
-type="submit"
-className="w-full bg-blue-600 text-white p-2 rounded"
->
-Signup
-</button>
-
-<p className="text-center mt-4">
-
-Already have an account?{" "}
-
-<Link
-to="/login"
-className="text-blue-600"
->
-
-Login
-
-</Link>
-
-</p>
-
-</form>
-
-</div>
-
-)
-
-}
-
-export default Signup
